@@ -8,7 +8,7 @@ void PrintMatrix()
 	for(int i = 0; i < vertices; i++)
 	{
 		for(int j = 0; j < vertices; j++)
-		{les
+		{
 			printf("%d ", vertices_matrix[vertices * i + j]);
 		}
 		printf("\n");
