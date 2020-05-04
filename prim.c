@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
 	MPI_Comm_size(MPI_COMM_WORLD, &node_size);
 	MPI_Comm_rank(MPI_COMM_WORLD, &node_id);
 
-	const char* file_name = "input2.txt";
+	const char* file_name = argv[1];
 
 
 	if(node_id == ROOT)
@@ -137,7 +137,7 @@ int main(int argc, char *argv[])
 
 	//Uzupelnianie tebalicy przesuniec
 	dist[0] = 0;
-	for(int i = 1; i < vertices; i++)
+	for(int i = 1; i < node_size; i++)
 	{
 		dist[i] = dist[i-1] + node_data_sizes[i-1];
 	}
