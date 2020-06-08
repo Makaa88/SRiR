@@ -91,9 +91,6 @@ int main(int argc, char const *argv[])
 	vertices_matrix = upcxx::broadcast(vertices_matrix, 0).wait();
 	vertices = upcxx::broadcast(vertices, 0).wait();
 
-
-	std::cout << "Process: " << upcxx::rank_me() << " have size: " << vertices <<  "  " << upcxx::rank_n() << std::endl;
-
 	upcxx::global_ptr<int> node_data_sizes = nullptr;
 
 	if(upcxx::rank_me() == 0)
@@ -133,11 +130,8 @@ int main(int argc, char const *argv[])
 
 	int* result_table = nullptr;
 
-	//int starting_index = node_data_starting_indexes.local()[upcxx::rank_me()];
 	int starting_index = upcxx::rget(node_data_starting_indexes + upcxx::rank_me()).wait();
-    //int ending_index = dist[upcxx::rank_me()] + local_node_data_sizes[upcxx::rank_me()];*/
 
-	std::cout << "Process: " << upcxx::rank_me() << " have data size: " << node_data_size << std::endl;
 	upcxx::barrier();
 
 
@@ -195,7 +189,7 @@ int main(int argc, char const *argv[])
 					break;
 				}
 			}
-
+			std::cout << "Going to vertex " << local_current_minamal_indexes[process_to_update] << " with wage " << local_current_minamal_wages[process_to_update] << std::endl;
 			result_table[local_current_minamal_indexes[process_to_update]] = global_minimal_wage; 
 		}
 
@@ -213,13 +207,13 @@ int main(int argc, char const *argv[])
 
 		visited_vertices_counter = CountVisitedVertices(visited_vertices, node_data_size);
 		all_visited = upcxx::reduce_all(visited_vertices_counter, upcxx::op_fast_add).wait();
-		if(upcxx::rank_me() == 0) std::cout << all_visited << std::endl;
 	}
 
 	upcxx::barrier();
 
 	if(upcxx::rank_me() == 0)
 	{
+		std::cout << std::endl << std::endl << "Result table" << std::endl;
 		for(int i = 0; i < vertices; i++)
 			std::cout << result_table[i] << " ";
 
